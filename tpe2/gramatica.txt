@@ -1,0 +1,4 @@
+S aSb
+S c
+S B
+B a
