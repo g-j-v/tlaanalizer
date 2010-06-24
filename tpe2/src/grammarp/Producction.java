@@ -20,5 +20,9 @@ public class Producction {
 	public void setRightpart(String rightpart) {
 		this.rightpart = rightpart;
 	}
+	@Override
+	public String toString() {
+		return noterminal + "->" + rightpart;
+	}
 	
 }
