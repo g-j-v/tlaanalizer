@@ -26,6 +26,14 @@ public class Grammar {
 		this.simbolosDirectrices = new HashMap<Producction, String>();
 	}
 
+	public Map<Producction, String> getSimbolosDirectrices() {
+		return simbolosDirectrices;
+	}
+
+	public void setSimbolosDirectrices(Map<Producction, String> simbolosDirectrices) {
+		this.simbolosDirectrices = simbolosDirectrices;
+	}
+
 	private boolean addTerminalSimbol(char terString) {
 		return this.terminalSimbols.add(terString);
 	}
@@ -189,6 +197,7 @@ public class Grammar {
 		}
 		return "";
 	}
+	
 
 	private String siguientesDe(String noTerminal) {
 		String siguientes = "";
