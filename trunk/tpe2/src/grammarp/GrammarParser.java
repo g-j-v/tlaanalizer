@@ -7,7 +7,7 @@ import java.text.ParseException;
 
 public class GrammarParser {
 	
-	public static String filename = "gramatica.txt";
+	public static String filename = "error";
 	
 	
 	public Grammar parse(String fileName) throws IOException, ParseException{
@@ -45,5 +45,11 @@ public class GrammarParser {
 		for(Producction p: g.producctions){
 			System.out.println(p.noterminal + "->" + p.rightpart);
 		}
+		g.calcularPrimeros();
+		System.out.println(g.primeros);
+		g.calcularSiguientes();
+		System.out.println(g.siguientes);
+		g.calcularSimbolosDirectrices();
+		System.out.println(g.simbolosDirectrices);
 	}
 }
