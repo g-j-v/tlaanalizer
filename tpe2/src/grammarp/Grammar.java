@@ -30,6 +30,12 @@ public class Grammar {
 			return addTerminalSimbol(lambda);
 		}
 		char c = rightPart.charAt(0);
+		// if(!Character.isLetter(c) || Character.isUpperCase(c)){ //descomentar
+		// para no bonus
+		// throw new
+		// ParseException("La parte derecha de todas las producciones debe comenzar con un simbolo Terminal (a menos que la produccion sea Lambda)",
+		// 0);
+		// }else
 		if (Character.isLowerCase(c)) {
 			flag &= addTerminalSimbol(c);
 		}
