@@ -1,9 +1,9 @@
 package grammarp;
 
-public class Producction {
+public class Production {
 	String noterminal;
 	String rightpart;
-	public Producction(String noterminal, String rightpart) {
+	public Production(String noterminal, String rightpart) {
 		super();
 		this.noterminal = noterminal;
 		this.rightpart = rightpart;
