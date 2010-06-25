@@ -315,7 +315,7 @@ public class Grammar {
 			if( !terminalSimbols.contains(c) )
 				return false;
 		
-		palabra = palabra.concat("#");
+		palabra = palabra.concat("$");
 		Stack<Character> pila = new Stack<Character>();
 		pila.push('#');
 		pila.push('S');
@@ -328,7 +328,7 @@ public class Grammar {
 			System.out.println("Tope: " + tope);
 			System.out.println("t: " + t);
 			
-			if( tope == '#' && t == '#' )
+			if( tope == '#' && t == '$' )
 				return true;
 			
 			if( terminalSimbols.contains(tope) )	{	//El tope es un simbolo TERMINAL
