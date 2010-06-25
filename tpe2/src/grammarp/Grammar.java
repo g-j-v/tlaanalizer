@@ -327,6 +327,8 @@ public class Grammar {
 		{
 			Character tope = pila.peek();
 			Character t = palabra.charAt(i);
+			System.out.println("Tope: " + tope);
+			System.out.println("t: " + t);
 			
 			if( tope == '#' && t == '#' )
 				return true;
@@ -343,11 +345,16 @@ public class Grammar {
 				Production produccion = tablaAnalizador.getProduccionTabla(t, tope);
 				if( produccion == null )
 					return false;
+				System.out.println("Corresponde la produccion: " + produccion);
 				if( !produccion.noterminal.equals(Character.toString(tope)) )
 					return false;
 				pila.pop();
-				for( Integer j = produccion.rightpart.length() - 1; j >= 0; j-- )
+				
+				for( Integer j = produccion.rightpart.length() - 1; j >= 0; j-- )	{
 					pila.push(produccion.rightpart.charAt(j));
+					System.out.println("Agregando a la pila " + produccion.rightpart.charAt(j));
+				}
+				System.out.println("\n");
 			}
 		}
 	}
