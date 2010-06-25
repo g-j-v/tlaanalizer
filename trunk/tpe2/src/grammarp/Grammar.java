@@ -5,32 +5,33 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 public class Grammar {
 	Set<Character> terminalSimbols;
 	Set<Character> noTerminalSymbols;
-	Set<Producction> producctions; // cambiar a algo de objeto production;
+	Set<Production> producctions; // cambiar a algo de objeto production;
 	String initSymbol = "S";
 	Map<String, String> primeros;
 	Map<String, String> siguientes;
-	Map<Producction, String> simbolosDirectrices;
+	Map<String, Production> simbolosDirectrices;
 	private static char lambda = '@';
 	private static char EOF = '$';
 
 	public Grammar() {
 		this.terminalSimbols = new HashSet<Character>();
 		this.noTerminalSymbols = new HashSet<Character>();
-		this.producctions = new HashSet<Producction>();
+		this.producctions = new HashSet<Production>();
 		this.primeros = new HashMap<String, String>();
 		this.siguientes = new HashMap<String, String>();
-		this.simbolosDirectrices = new HashMap<Producction, String>();
+		this.simbolosDirectrices = new HashMap<String, Production>();
 	}
 
-	public Map<Producction, String> getSimbolosDirectrices() {
+	public Map<String, Production> getSimbolosDirectrices() {
 		return simbolosDirectrices;
 	}
 
-	public void setSimbolosDirectrices(Map<Producction, String> simbolosDirectrices) {
+	public void setSimbolosDirectrices(Map<String, Production> simbolosDirectrices) {
 		this.simbolosDirectrices = simbolosDirectrices;
 	}
 
@@ -75,21 +76,21 @@ public class Grammar {
 			throws ParseException {
 		parseRightPart(rightPart);
 		if (rightPart.equals("")) {
-			return this.producctions.add(new Producction(noTerminal, Character
+			return this.producctions.add(new Production(noTerminal, Character
 					.toString(lambda)));
 		}
 		if (noTerminal.length() != 1) {
 			throw new ParseException(
-					"La parte izquierda de las producciones es un unico siõmbolo No Terminal",
+					"La parte izquierda de las producciones es un unico siï¿½mbolo No Terminal",
 					0);
 		}
 		addNoTerminalSimbol(noTerminal.charAt(0));
-		return this.producctions.add(new Producction(noTerminal, rightPart));
+		return this.producctions.add(new Production(noTerminal, rightPart));
 	}
 
-	private Set<Producction> obtenerProduccionesDe(String noTerminal) {
-		HashSet<Producction> resp = new HashSet<Producction>();
-		for (Producction p : producctions) {
+	private Set<Production> obtenerProduccionesDe(String noTerminal) {
+		HashSet<Production> resp = new HashSet<Production>();
+		for (Production p : producctions) {
 			if (p.noterminal.equals(noTerminal)) {
 				resp.add(p);
 			}
@@ -100,7 +101,7 @@ public class Grammar {
 	// primeros De tal no terminal
 	private String primerosDe(String noTerminal) {
 		String primeros = "";
-		for (Producction p : obtenerProduccionesDe(noTerminal)) {
+		for (Production p : obtenerProduccionesDe(noTerminal)) {
 			if (terminalSimbols.contains(p.rightpart.charAt(0))) {// es terminal
 				if (!primeros.contains(Character
 						.toString(p.rightpart.charAt(0)))) {
@@ -135,7 +136,7 @@ public class Grammar {
 	 */
 
 	private boolean isAnulable(String noTerminal) {
-		for (Producction p : obtenerProduccionesDe(noTerminal)) {
+		for (Production p : obtenerProduccionesDe(noTerminal)) {
 			if (p.rightpart.contains(Character.toString(lambda))) {
 				return true;
 			}
@@ -201,8 +202,8 @@ public class Grammar {
 
 	private String siguientesDe(String noTerminal) {
 		String siguientes = "";
-		System.out.println("Obteniendo Siguientes de : " + noTerminal);
-		for (Producction p : producctions) {
+//		System.out.println("Obteniendo Siguientes de : " + noTerminal);
+		for (Production p : producctions) {
 			if (p.rightpart.contains(noTerminal)) {
 				if (!(isUltimo(p.rightpart, noTerminal))) { // Si no es ultimo
 					// en la produccion
@@ -283,28 +284,70 @@ public class Grammar {
 
 	public void calcularPrimeros() {
 		for (Character nt : noTerminalSymbols) {
-			System.out.println(nt);
+			//System.out.println(nt);
 			primeros.put(Character.toString(nt), primerosDe(Character
 					.toString(nt)));
 		}
 	}
 
 	public void calcularSimbolosDirectrices() {
-		for (Producction p : producctions) {
-			if (!isAnulableEsto(p.rightpart)) {
-				if (isTerminal(p.rightpart.charAt(0))) {
-					simbolosDirectrices.put(p, Character.toString(p.rightpart
-							.charAt(0)));
+		for (Production production : producctions) {
+			if (!isAnulableEsto(production.rightpart)) {
+				if (isTerminal(production.rightpart.charAt(0))) {
+					simbolosDirectrices.put(Character.toString(production.rightpart
+							.charAt(0)), production);
 				} else {
-					simbolosDirectrices.put(p, primerosDe(Character
-							.toString(p.rightpart.charAt(0))));
+					simbolosDirectrices.put(primerosDe(Character
+							.toString(production.rightpart.charAt(0))), production);
 				}
 			} else {
 				String sd = "";
-				sd += primerosDe(Character.toString(p.rightpart.charAt(0)));
-				sd += siguientesDe(p.noterminal);
-				simbolosDirectrices.put(p, sd);
+				sd += primerosDe(Character.toString(production.rightpart.charAt(0)));
+				sd += siguientesDe(production.noterminal);
+				simbolosDirectrices.put(sd, production);
 
+			}
+		}
+	}
+	
+	public boolean validarPalabra(String palabra) {
+		/* Valido que los caracteres sean simbolos terminales de la gramatica */
+		for( Character c : palabra.toCharArray() )
+			if( !terminalSimbols.contains(c) )
+				return false;
+		
+		palabra = palabra.concat("#");
+		Stack<Character> pila = new Stack<Character>();
+		pila.push('#');
+		pila.push('S');
+		
+		TablaAnalizador tablaAnalizador = new TablaAnalizador(simbolosDirectrices); 
+		Integer i = 0;
+		while( true )
+		{
+			Character tope = pila.peek();
+			Character t = palabra.charAt(i);
+			
+			if( tope == '#' && t == '#' )
+				return true;
+			
+			if( terminalSimbols.contains(tope) )	{
+				if( tope.equals(t) )	{
+					pila.pop();
+					i++;
+				}
+				else 
+					return false;
+			}
+			else {
+				Production produccion = tablaAnalizador.getProduccionTabla(t, tope);
+				if( produccion == null )
+					return false;
+				if( !produccion.noterminal.equals(Character.toString(tope)) )
+					return false;
+				pila.pop();
+				for( Integer j = produccion.rightpart.length() - 1; j >= 0; j-- )
+					pila.push(produccion.rightpart.charAt(j));
 			}
 		}
 	}

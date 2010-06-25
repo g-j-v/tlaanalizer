@@ -3,11 +3,13 @@ package grammarp;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.ParseException;
 
 public class GrammarParser {
 	
-	public static String filename = "error";
+//	public static String filename = "gramatica.txt";
+	public static String filename = "gramaticaPrueba.txt";
 	
 	
 	public Grammar parse(String fileName) throws IOException, ParseException{
@@ -29,27 +31,45 @@ public class GrammarParser {
 	}
 	
 	public static void main(String[] args) {
-		GrammarParser gp = new GrammarParser();
-		Grammar g = null;
+		GrammarParser grammarParser = new GrammarParser();
+		Grammar gramatica = null;
 		try {
-			g = gp.parse(filename);
+			gramatica = grammarParser.parse(filename);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("NT: " + g.noTerminalSymbols);
-		System.out.println("T: " + g.terminalSimbols);
-		for(Producction p: g.producctions){
+		gramatica.calcularPrimeros();
+		gramatica.calcularSiguientes();
+		gramatica.calcularSimbolosDirectrices();
+		
+		System.out.println("NT: " + gramatica.noTerminalSymbols);
+		System.out.println("T: " + gramatica.terminalSimbols);
+		/*
+		for(Producction p: gramatica.producctions){
 			System.out.println(p.noterminal + "->" + p.rightpart);
 		}
-		g.calcularPrimeros();
-		System.out.println(g.primeros);
-		g.calcularSiguientes();
-		System.out.println(g.siguientes);
-		g.calcularSimbolosDirectrices();
-		System.out.println(g.simbolosDirectrices);
+		System.out.println(gramatica.primeros);
+		System.out.println(gramatica.siguientes);
+		 */		
+		System.out.println("Directrices: " + gramatica.simbolosDirectrices);
+		
+		validarPalabras(gramatica);
+	}
+
+	private static void validarPalabras( Grammar gramatica ) {
+		try {
+		    BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		    String str = "";
+		    while (str != null) {
+		        System.out.print("Ingrese una palabra: ");
+		        str = in.readLine();
+		        boolean pertenece = gramatica.validarPalabra(str);
+		        System.out.println("La palabra " + (pertenece?"":"NO ") + "pertenece al lenguaje.");
+		    }
+		} catch (IOException e) {
+			
+		}
 	}
 }
