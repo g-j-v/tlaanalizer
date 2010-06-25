@@ -8,9 +8,9 @@ import java.text.ParseException;
 
 public class GrammarParser {
 	
-//	public static String filename = "error";
+	public static String filename = "error2";
 //	public static String filename = "gramatica.txt";
-	public static String filename = "gramaticaPrueba.txt";
+//	public static String filename = "gramaticaPrueba.txt";
 	
 	
 	public Grammar parse(String fileName) throws IOException, ParseException{

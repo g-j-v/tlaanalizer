@@ -85,6 +85,13 @@ public class Grammar {
 					0);
 		}
 		addNoTerminalSimbol(noTerminal.charAt(0));
+		for(Character c: rightPart.toCharArray()){
+			if(!Character.isLetter(c)){
+				throw new ParseException(
+						"La parte izquierda una de las  producciones contirne algo que no es un caracter",
+						0);
+			}
+		}
 		return this.producctions.add(new Production(noTerminal, rightPart));
 	}
 
