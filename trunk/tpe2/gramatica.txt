@@ -1,2 +1,3 @@
-S pSc
-S a
+S aSb
+S c
+S 

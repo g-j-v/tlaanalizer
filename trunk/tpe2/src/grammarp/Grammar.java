@@ -98,7 +98,11 @@ public class Grammar {
 		return resp;
 	}
 
-	// primeros De tal no terminal
+	/**
+	 * Calcula los primeros de <b>noTerminal</b>
+	 * @param noTerminal
+	 * @return primeros
+	 */
 	private String primerosDe(String noTerminal) {
 		String primeros = "";
 		for (Production p : obtenerProduccionesDe(noTerminal)) {
@@ -200,6 +204,11 @@ public class Grammar {
 	}
 	
 
+	/**
+	 * Calcula los siguientes de <b>noTerminal</b>
+	 * @param noTerminal
+	 * @return Siguientes
+	 */
 	private String siguientesDe(String noTerminal) {
 		String siguientes = "";
 //		System.out.println("Obteniendo Siguientes de : " + noTerminal);
@@ -274,14 +283,18 @@ public class Grammar {
 		}
 		return siguientes;
 	}
-
+	/**
+	 * Clacula los siguientes de todos los no terminales
+	 */
 	public void calcularSiguientes() {
 		for (Character nt : noTerminalSymbols) {
 			siguientes.put(Character.toString(nt), siguientesDe(Character
 					.toString(nt)));
 		}
 	}
-
+	/**
+	 * calcula los primero de todos sus no terminales
+	 */
 	public void calcularPrimeros() {
 		for (Character nt : noTerminalSymbols) {
 			//System.out.println(nt);
@@ -289,7 +302,9 @@ public class Grammar {
 					.toString(nt)));
 		}
 	}
-
+	/**
+	 * Simbolos direcctrices de todas las producciones
+	 */
 	public void calcularSimbolosDirectrices() {
 		for (Production production : producctions) {
 			if (!isAnulableLaFormaSentencialDerecha(production.rightpart)) {
