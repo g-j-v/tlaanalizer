@@ -15,8 +15,8 @@ public class Grammar {
 	Map<String, String> primeros;
 	Map<String, String> siguientes;
 	Map<Production, String> simbolosDirectrices;
-	private static char lambda = '@';
-	private static char EOF = '$';
+	public static char lambda = '@';
+	public static char EOF = '$';
 
 	public Grammar() {
 		this.terminalSimbols = new HashSet<Character>();
