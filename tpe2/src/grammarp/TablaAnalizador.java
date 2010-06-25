@@ -1,8 +1,6 @@
 package grammarp;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,12 +14,13 @@ public class TablaAnalizador {
 	 * 		El valor es la produccion correspondiente a ese par. 
 	 */
 	private Map<Character, Map<Character, Production>> tabla;
+	private Grammar g;
 
 	public TablaAnalizador( Grammar gramatica, Map<Production, String> simbolosDirectrices ) 
 	{
 		Set<Character> terminales = gramatica.terminalSimbols;
 		terminales.add(Grammar.EOF);
-		
+		g=gramatica;
 		tabla = new HashMap<Character, Map<Character, Production>>();
 		for( Character terminal: terminales )	{
 //			System.out.println("Procesando produccion: " + produccion);
@@ -50,11 +49,29 @@ public class TablaAnalizador {
 			}*/
 		}
 	}
-	public void printTable(){
-		for(Character c: tabla.keySet()){
-			System.out.println(c );
-			System.out.println(tabla.get(c));
+	
+	private String alingto(String cadena, int cantspacios){
+		for(int i=cadena.length(); i < cantspacios; i++){
+			cadena+=" ";
 		}
+		return cadena;
+	}
+	public void printTable(){
+		System.out.print("        ");
+		String tab = "          ";
+		Character[] terminales = tabla.keySet().toArray(new Character[tabla.keySet().size()]);
+		for(Character c: terminales){
+			System.out.print(alingto(Character.toString(c), 10));
+		}
+		System.out.println("");
+		for(Character nt: g.noTerminalSymbols ){
+			System.out.print(nt+"\t");
+			for(int i=0; i < terminales.length; i++){
+				System.out.print(getProduccionTabla(terminales[i], nt)==null?alingto(ERROR, 10):alingto(getProduccionTabla(terminales[i], nt).toString(), 10));
+			}
+			System.out.println("");
+		}
+		System.out.println("");
 	}
 
 	public Production getProduccionTabla( Character terminal, Character noTerminal )
