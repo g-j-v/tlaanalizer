@@ -14,7 +14,7 @@ public class Grammar {
 	String initSymbol = "S";
 	Map<String, String> primeros;
 	Map<String, String> siguientes;
-	Map<String, Production> simbolosDirectrices;
+	Map<Production, String> simbolosDirectrices;
 	private static char lambda = '@';
 	private static char EOF = '$';
 
@@ -24,14 +24,14 @@ public class Grammar {
 		this.producctions = new HashSet<Production>();
 		this.primeros = new HashMap<String, String>();
 		this.siguientes = new HashMap<String, String>();
-		this.simbolosDirectrices = new HashMap<String, Production>();
+		this.simbolosDirectrices = new HashMap<Production, String>();
 	}
 
-	public Map<String, Production> getSimbolosDirectrices() {
+	public Map<Production, String> getSimbolosDirectrices() {
 		return simbolosDirectrices;
 	}
 
-	public void setSimbolosDirectrices(Map<String, Production> simbolosDirectrices) {
+	public void setSimbolosDirectrices(Map<Production, String> simbolosDirectrices) {
 		this.simbolosDirectrices = simbolosDirectrices;
 	}
 
@@ -174,7 +174,7 @@ public class Grammar {
 	 * @param noTerminal
 	 * @return
 	 */
-	private boolean isAnulableEsto(String formaSentencialDerecha) {
+	private boolean isAnulableLaFormaSentencialDerecha(String formaSentencialDerecha) {
 
 		if (isTerminal(formaSentencialDerecha.charAt(0))) {
 			return formaSentencialDerecha.charAt(0) == lambda;
@@ -292,25 +292,24 @@ public class Grammar {
 
 	public void calcularSimbolosDirectrices() {
 		for (Production production : producctions) {
-			if (!isAnulableEsto(production.rightpart)) {
+			if (!isAnulableLaFormaSentencialDerecha(production.rightpart)) {
 				if (isTerminal(production.rightpart.charAt(0))) {
-					simbolosDirectrices.put(Character.toString(production.rightpart
-							.charAt(0)), production);
+					simbolosDirectrices.put(production, Character.toString(production.rightpart
+							.charAt(0)));
 				} else {
-					simbolosDirectrices.put(primerosDe(Character
-							.toString(production.rightpart.charAt(0))), production);
+					simbolosDirectrices.put(production, primerosDe(Character
+							.toString(production.rightpart.charAt(0))));
 				}
 			} else {
-				String sd = "";
-				sd += primerosDe(Character.toString(production.rightpart.charAt(0)));
-				sd += siguientesDe(production.noterminal);
-				simbolosDirectrices.put(sd, production);
-
+				String simbolos = "";
+				simbolos += primerosDe(Character.toString(production.rightpart.charAt(0)));
+				simbolos += siguientesDe(production.noterminal);
+				simbolosDirectrices.put(production, simbolos);
 			}
 		}
 	}
 	
-	public boolean validarPalabra(String palabra) {
+	public boolean validarPalabra(String palabra, TablaAnalizador tablaAnalizador) {
 		/* Valido que los caracteres sean simbolos terminales de la gramatica */
 		for( Character c : palabra.toCharArray() )
 			if( !terminalSimbols.contains(c) )
@@ -320,8 +319,7 @@ public class Grammar {
 		Stack<Character> pila = new Stack<Character>();
 		pila.push('#');
 		pila.push('S');
-		
-		TablaAnalizador tablaAnalizador = new TablaAnalizador(simbolosDirectrices); 
+		 
 		Integer i = 0;
 		while( true )
 		{
@@ -333,15 +331,18 @@ public class Grammar {
 			if( tope == '#' && t == '#' )
 				return true;
 			
-			if( terminalSimbols.contains(tope) )	{
-				if( tope.equals(t) )	{
+			if( terminalSimbols.contains(tope) )	{	//El tope es un simbolo TERMINAL
+				if( tope.equals(lambda) )	{
+					pila.pop();
+				}
+				else if( tope.equals(t) )	{
 					pila.pop();
 					i++;
 				}
 				else 
 					return false;
 			}
-			else {
+			else {										//El tope es un simbolo NO TERMINAL
 				Production produccion = tablaAnalizador.getProduccionTabla(t, tope);
 				if( produccion == null )
 					return false;

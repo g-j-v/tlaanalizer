@@ -8,8 +8,9 @@ import java.text.ParseException;
 
 public class GrammarParser {
 	
+	public static String filename = "error";
 //	public static String filename = "gramatica.txt";
-	public static String filename = "gramaticaPrueba.txt";
+//	public static String filename = "gramaticaPrueba.txt";
 	
 	
 	public Grammar parse(String fileName) throws IOException, ParseException{
@@ -47,25 +48,27 @@ public class GrammarParser {
 		System.out.println("NT: " + gramatica.noTerminalSymbols);
 		System.out.println("T: " + gramatica.terminalSimbols);
 		/*
-		for(Producction p: gramatica.producctions){
+		for(Production p: gramatica.producctions){
 			System.out.println(p.noterminal + "->" + p.rightpart);
 		}
-		System.out.println(gramatica.primeros);
-		System.out.println(gramatica.siguientes);
 		 */		
+		System.out.println("Primeros " + gramatica.primeros);
+		System.out.println("Siguientes " + gramatica.siguientes);
 		System.out.println("Directrices: " + gramatica.simbolosDirectrices);
 		
-		validarPalabras(gramatica);
+		TablaAnalizador tablaAnalizador = new TablaAnalizador(gramatica.simbolosDirectrices);
+		
+		validarPalabras(gramatica, tablaAnalizador);
 	}
 
-	private static void validarPalabras( Grammar gramatica ) {
+	private static void validarPalabras( Grammar gramatica, TablaAnalizador tablaAnalizador ) {
 		try {
 		    BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		    String str = "";
 		    while (str != null) {
 		        System.out.print("Ingrese una palabra: ");
 		        str = in.readLine();
-		        boolean pertenece = gramatica.validarPalabra(str);
+		        boolean pertenece = gramatica.validarPalabra(str, tablaAnalizador);
 		        System.out.println("La palabra " + (pertenece?"":"NO ") + "pertenece al lenguaje.");
 		    }
 		} catch (IOException e) {
