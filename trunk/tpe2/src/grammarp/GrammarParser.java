@@ -8,9 +8,9 @@ import java.text.ParseException;
 
 public class GrammarParser {
 	
-	public static String filename = "error";
+//	public static String filename = "error";
 //	public static String filename = "gramatica.txt";
-//	public static String filename = "gramaticaPrueba.txt";
+	public static String filename = "gramaticaPrueba.txt";
 	
 	
 	public Grammar parse(String fileName) throws IOException, ParseException{
@@ -56,7 +56,8 @@ public class GrammarParser {
 		System.out.println("Siguientes " + gramatica.siguientes);
 		System.out.println("Directrices: " + gramatica.simbolosDirectrices);
 		
-		TablaAnalizador tablaAnalizador = new TablaAnalizador(gramatica.simbolosDirectrices);
+		TablaAnalizador tablaAnalizador = new TablaAnalizador(gramatica,gramatica.simbolosDirectrices);
+		tablaAnalizador.printTable();
 		
 		validarPalabras(gramatica, tablaAnalizador);
 	}
