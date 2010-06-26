@@ -1,0 +1,12 @@
+Compilarlo con:
+$> ant
+o bien
+$> javac -target 1.6 -d bin/ src/grammarp/*.java
+
+Para ejecutarlo:
+
+Pararse en el directorio bin (las gramáticas tienen que estar en este directorio)
+
+$> java grammarp.GrammarParser [archivo]
+
+Si se especifica archivo toma ese si no, por defecto gramaticas.txt
